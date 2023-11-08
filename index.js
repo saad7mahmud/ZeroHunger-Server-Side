@@ -98,6 +98,16 @@ async function run() {
       res.send(result);
     });
 
+    // Delete A specific food
+        app.delete("/available-foods-delete/:id", async (req, res) => {
+          const id = req.params.id; //get from front
+          const query = { _id: new ObjectId(id) };
+          const result = await availableFoodCollection.deleteOne(query);
+          console.log(result);
+          res.send(result);
+        });
+    
+
     await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
