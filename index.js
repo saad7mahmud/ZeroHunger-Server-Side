@@ -86,11 +86,17 @@ async function run() {
       res.send(result);
     });
 
-
     // Get Data foodCollection ->requestID === _id & userEmail = donator email
 
-    
-
+    // Get All Food Sorted Data For Featured
+    app.get("/available-foods-feature", async (req, res) => {
+      result = await availableFoodCollection
+        .find()
+        .sort({ foodQuantityNumber: -1 })
+        .toArray();
+      console.log(req.query);
+      res.send(result);
+    });
 
     await client.db("admin").command({ ping: 1 });
     console.log(
