@@ -106,6 +106,14 @@ async function run() {
           console.log(result);
           res.send(result);
         });
+    // Delete A requested food
+        app.delete("/requested-food-delete/:id", async (req, res) => {
+          const id = req.params.id; //get from front
+          const query = { _id: new ObjectId(id) };
+          const result = await requestedFoodCollection.deleteOne(query);
+          console.log(result);
+          res.send(result);
+        });
     
 
     await client.db("admin").command({ ping: 1 });
