@@ -99,22 +99,59 @@ async function run() {
     });
 
     // Delete A specific food
-        app.delete("/available-foods-delete/:id", async (req, res) => {
-          const id = req.params.id; //get from front
-          const query = { _id: new ObjectId(id) };
-          const result = await availableFoodCollection.deleteOne(query);
-          console.log(result);
-          res.send(result);
-        });
+    app.delete("/available-foods-delete/:id", async (req, res) => {
+      const id = req.params.id; //get from front
+      const query = { _id: new ObjectId(id) };
+      const result = await availableFoodCollection.deleteOne(query);
+      console.log(result);
+      res.send(result);
+    });
     // Delete A requested food
-        app.delete("/requested-food-delete/:id", async (req, res) => {
-          const id = req.params.id; //get from front
-          const query = { _id: new ObjectId(id) };
-          const result = await requestedFoodCollection.deleteOne(query);
-          console.log(result);
-          res.send(result);
-        });
-    
+    app.delete("/requested-food-delete/:id", async (req, res) => {
+      const id = req.params.id; //get from front
+      const query = { _id: new ObjectId(id) };
+      const result = await requestedFoodCollection.deleteOne(query);
+      console.log(result);
+      res.send(result);
+    });
+
+    // Update some information
+    app.get("/available-foods-update/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await availableFoodCollection.findOne(query);
+      console.log(result);
+      res.send(result);
+    });
+
+    // PUT To update
+    app.put("/available-foods-update/:id", async (req, res) => {
+      const id = req.params.id;
+      const updateFoodInfo = req.body;
+      const query = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const finalUpdateInfo = {
+        $set: {
+          foodName: updateFoodInfo.foodName,
+          foodImage: updateFoodInfo.foodImage,
+          foodQuantityNumber: updateFoodInfo.foodQuantityNumber,
+          foodExpiryDate: updateFoodInfo.foodExpiryDate,
+          expiryDateMs: updateFoodInfo.expiryDateMs,
+          foodPickUpLocation: updateFoodInfo.foodPickUpLocation,
+          foodStatus: updateFoodInfo.foodStatus,
+          additionalDonatorNotes: updateFoodInfo.additionalDonatorNotes,
+          donatorName: updateFoodInfo.donatorName,
+          donatorEmail: updateFoodInfo.donatorEmail,
+          donatorImage: updateFoodInfo.donatorImage,
+        },
+      };
+      const result = await availableFoodCollection.updateOne(
+        query,
+        finalUpdateInfo,
+        options
+      );
+      res.send(result);
+    });
 
     await client.db("admin").command({ ping: 1 });
     console.log(
