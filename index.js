@@ -72,14 +72,6 @@ async function run() {
       }
     });
 
-    // Get All data from available
-
-    // app.get("/available-foods", async (req, res) => {
-    //   result = await availableFoodCollection.find().toArray();
-    //   console.log(req.query);
-    //   res.send(result);
-    // });
-
     // Get Only Selected ID Food
     app.get("/available-foods/:id", async (req, res) => {
       const id = req.params.id;
