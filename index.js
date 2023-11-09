@@ -93,9 +93,10 @@ async function run() {
     app.get("/available-foods", async (req, res) => {
       console.log(req.query.donatorEmail);
       const sort = req.query.sort;
-      let query = {};
+      const search = req.query.search;
+      let query = { foodName: { $regex: search, $options: "i" } };
       const options = {
-        sort: { 'expiryDateMs': sort === "asc" ? 1 : -1 },
+        sort: { expiryDateMs: sort === "asc" ? 1 : -1 },
       };
 
       if (req.query?.donatorEmail) {
