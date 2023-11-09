@@ -87,6 +87,25 @@ async function run() {
     });
 
     // Get Data foodCollection ->requestID === _id & userEmail = donator email
+    app.get("/manage-my-food/:id", async (req, res) => {
+      const id = req.params.id;
+      console.log(id);
+      const query = { requestedId: id };
+      const result = await requestedFoodCollection.find(query).toArray();
+      res.send(result);
+    });
+
+    // query mail and foodID
+    app.get("/requested-foods-select", async (req, res) => {
+      const query = {
+        $and: [
+          { donatorEmail: req.query?.donatorEmail },
+          { requestedId: req.query?.requestedId },
+        ],
+      };
+      const result = await requestedFoodCollection.find(query).toArray();
+      res.send(result);
+    });
 
     // Get All Food Sorted Data For Featured
     app.get("/available-foods-feature", async (req, res) => {
@@ -146,6 +165,28 @@ async function run() {
         },
       };
       const result = await availableFoodCollection.updateOne(
+        query,
+        finalUpdateInfo,
+        options
+      );
+      res.send(result);
+    });
+
+    // PUT for status change
+    app.put("/deliver-status-update/:id", async (req, res) => {
+      const id = req.params.id;
+      console.log("id is", id);
+      const updateFoodInfo = req.body;
+      console.log(updateFoodInfo);
+      const query = { requestedId: id };
+      console.log(query);
+      const options = { upsert: true };
+      const finalUpdateInfo = {
+        $set: {
+          requestStatus: updateFoodInfo.requestStatus,
+        },
+      };
+      const result = await requestedFoodCollection.updateOne(
         query,
         finalUpdateInfo,
         options
