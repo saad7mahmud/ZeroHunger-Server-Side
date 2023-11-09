@@ -92,11 +92,18 @@ async function run() {
     // Get data matching user Email and Donator Email
     app.get("/available-foods", async (req, res) => {
       console.log(req.query.donatorEmail);
+      const sort = req.query.sort;
       let query = {};
+      const options = {
+        sort: { 'expiryDateMs': sort === "asc" ? 1 : -1 },
+      };
+
       if (req.query?.donatorEmail) {
         query = { donatorEmail: req.query.donatorEmail };
       }
-      const result = await availableFoodCollection.find(query).toArray();
+      const result = await availableFoodCollection
+        .find(query, options)
+        .toArray();
       res.send(result);
     });
 
