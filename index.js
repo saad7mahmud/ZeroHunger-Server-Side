@@ -44,8 +44,32 @@ async function run() {
     app.post("/requested-foods", async (req, res) => {
       const requestedFoodInfo = req.body;
 
-      const result = await requestedFoodCollection.insertOne(requestedFoodInfo);
-      res.send(result);
+      const query = {
+        requestedId: requestedFoodInfo.requestedId,
+        // Add more criteria as needed
+      };
+      console.log(query);
+      async function isExist(requestedFoodCollection, query) {
+        try {
+          const document = await requestedFoodCollection.findOne(query);
+          return document !== null;
+        } catch (error) {
+          console.error("Error checking document existence:", error);
+          return false;
+        }
+      }
+
+      const exists = await isExist(requestedFoodCollection, query);
+
+      if (exists) {
+        res.status(400).send({ error: "Requested food already exists." });
+      } else {
+        // Insert the requested food if it doesn't exist
+        const result = await requestedFoodCollection.insertOne(
+          requestedFoodInfo
+        );
+        res.status(201).send(result);
+      }
     });
 
     // Get All data from available
